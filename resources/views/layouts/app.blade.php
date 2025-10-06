@@ -15,7 +15,7 @@
   
     <div class="block p-10">
         <div class="p-5">
-        <a class="font-bold" href="{{ route('dashboard') }}" >Dashboard</a>
+        {{-- <a class="font-bold" href="{{ route('dashboard') }}" >Dashboard</a> --}}
       </div>
       <div class="p-5">
         <a class="font-bold" href="{{ route('role.index') }}">Role</a>

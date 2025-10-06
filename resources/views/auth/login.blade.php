@@ -10,25 +10,21 @@
     <title>Document</title>
 </head>
 <body>
-  
-   <form class="container p-10 mt-10">
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Email address</label>
-    <input type="email" class="form-control" name="email">
- 
-  </div>
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Password</label>
-    <input type="password" class="form-control" name="password" >
-  </div>
-  <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-  </div>
-  <button type="submit" class="btn btn-primary">Login</button>
-<strong><a href="{{ route('auth.register') }}">Register</a></strong>
-
-</form>
+<div class="flex items-center justify-center h-screen">
+        <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+            <h2 class="text-2xl mb-4">Login</h2>
+            <form action="{{ route('login') }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <input type="email" name="email" placeholder="Email" class="border p-2 w-full" required>
+                </div>
+                <div class="mb-4">
+                    <input type="password" name="password" placeholder="Password" class="border p-2 w-full" required>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">Login</button>
+            </form>
+        </div>
+    </div>
    
 </body>
 
