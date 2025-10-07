@@ -3,45 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    // Display all students
     public function index()
-    {
-        $students = Student::all();
-        return view('student.index', compact('students'));
-    }
+{
+    $students = Student::with('user')->get(); 
+    return view('student.index', compact('students'));
+}
 
-    // Show form to create a new student
+
+   
     public function create()
     {
         return view('student.create');
     }
 
-    // Store new student
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'id_student' => 'required|string|max:20',
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|unique:students,email',
-            'phone'      => 'nullable|string|max:20',
-        ]);
+    
+   
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'password' => 'nullable|string|min:6',
+        'subject' => 'nullable|string|max:255',
+    ]);
 
-        Student::create($validated);
+    $user =User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' =>$request->password,
+    ]);
 
-        return redirect()->route('students.index')->with('success', 'Student added successfully!');
-    }
+     Teacher::create([
+        'user_id' => $user->id,
+        'subject' => $validated['subject'] ?? null,
+    ]);
 
-    // Show form to edit a student
+    return redirect()->route('teacher.index')->with('success', 'Teacher added successfully!');
+}
     public function edit(Student $student)
     {
         return view('student.edit', compact('student'));
     }
 
-    // Update a student
+
     public function update(Request $request, Student $student)
     {
         $validated = $request->validate([
@@ -56,7 +65,7 @@ class StudentController extends Controller
         return redirect()->route('student.index')->with('success', 'Student updated successfully!');
     }
 
-    // Delete a student
+   
     public function destroy(Student $student)
     {
         $student->delete();

@@ -13,16 +13,17 @@
 <div class="flex items-center justify-center h-screen">
         <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
             <h2 class="text-2xl mb-4">Login</h2>
-            <form action="{{ route('login') }}" method="POST">
-                @csrf
-                <div class="mb-4">
-                    <input type="email" name="email" placeholder="Email" class="border p-2 w-full" required>
-                </div>
-                <div class="mb-4">
-                    <input type="password" name="password" placeholder="Password" class="border p-2 w-full" required>
-                </div>
-                <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">Login</button>
-            </form>
+           <form action="{{ url('/login') }}" method="POST">
+    @csrf
+    <div class="mb-4">
+        <input type="email" name="email" placeholder="Email" class="border p-2 w-full" required>
+    </div>
+    <div class="mb-4">
+        <input type="password" name="password" placeholder="Password" class="border p-2 w-full" required>
+    </div>
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">Login</button>
+</form>
+
         </div>
     </div>
    

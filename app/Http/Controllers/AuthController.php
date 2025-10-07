@@ -22,15 +22,17 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            return redirect()->route('dashboard')->with('success', 'Logged in successfully.');
+            return redirect()->intended('/dashboard');
         }
 
         return back()->with('error', 'Invalid credentials.');
     }
 
+
+    
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('auth.login')->with('success', 'Logged out successfully.');
+        return redirect()->route('login')->with('success', 'Logged out successfully.');
     }
 }

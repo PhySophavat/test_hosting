@@ -6,11 +6,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name','email','password'];
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'user_roles');
+        return $this->belongsToMany(Role::class);
     }
 
     public function teacher()
@@ -21,17 +21,5 @@ class User extends Authenticatable
     public function student()
     {
         return $this->hasOne(Student::class);
-    }
-
-    public function hasRole($role)
-    {
-        return $this->roles()->where('name', $role)->exists();
-    }
-
-    public function hasPermission($permission)
-    {
-        return $this->roles()->whereHas('permissions', function ($query) use ($permission) {
-            $query->where('name', $permission);
-        })->exists();
     }
 }

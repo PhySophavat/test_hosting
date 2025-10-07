@@ -23,10 +23,12 @@
             @foreach ($students as $student)
             <tr>
                 {{-- <td class="py-2 px-4 border">{{ $loop->iteration }}</td> --}}
-                <td class="py-2 px-4 border">{{ $student->id_student }}</td>
-                <td class="py-2 px-4 border">{{ $student->name }}</td>
-                <td class="py-2 px-4 border">{{ $student->email }}</td>
-                <td class="py-2 px-4 border">{{ $student->phone }}</td>
+            <td>{{ $student->user->password }}</td>
+<td class="py-2 px-4 border">{{ $student->user->name }}</td>
+<td class="py-2 px-4 border">{{ $student->user->email }}</td>
+<td class="py-2 px-4 border">{{ $student->grade }}</td>
+
+
                 <td class="py-2 px-4 border text-center">
                     <a href="{{ route('students.edit', $student) }}" class="text-blue-600 hover:underline">Edit</a> |
                     <form action="{{ route('students.destroy', $student) }}" method="POST" class="inline">

@@ -8,10 +8,12 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 
 
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('login'); 
+Route::post('/login', [AuthController::class, 'login']);                       
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');      
+
+Route::get('/dashboard',[DashboardController::class, 'index'])->name('dashboard');
 ////teacher
 
 Route::get('/teacher', [TeacherController::class, 'index'])->name('teacher.index');     

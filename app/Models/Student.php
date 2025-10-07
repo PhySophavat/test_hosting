@@ -1,16 +1,11 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    // use HasFactory;
-
-    protected $table = 'students';
-
-    protected $fillable = ['id_student', 'name', 'email', 'phone'];
+    protected $fillable = ['user_id', 'grade'];
 
     public function user()
     {
