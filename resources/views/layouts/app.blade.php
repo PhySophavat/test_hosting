@@ -26,6 +26,10 @@
        <div class="p-5">
         <a class="font-bold" href="{{ route('student.index') }}">Student</a>
       </div>
+       <div class="p-5">
+       {{-- <a class="font-bold" href="{{ route('score.index') }}">Score</a> --}}
+
+      </div>
     </div>
    
   </div>
