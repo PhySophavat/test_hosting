@@ -6,9 +6,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
-use App\Http\Controllers\ScoreController;
+use App\Http\Controllers\SubjectController;
 use App\Models\Role;
-
+Route::get('/profile',[DashboardController::class, 'profile'])->name('auth.profile');
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login'); 
 Route::post('/login', [AuthController::class, 'login']);                       
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');      
@@ -32,11 +32,22 @@ Route::put('/students/{student}', [StudentController::class, 'update'])->name('s
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 
 // use App\Http\Controllers\ScoreController;
-Route::get('/score', [ScoreController::class, 'index'])
-    ->name('score.index')
-    ->middleware('auth');  
+// Route::get('/subject', [SubjectController::class, 'index'])
+//     ->name('subject.index')
+//     ->middleware('auth');  
+    // use App\Http\Controllers\SubjectController;
 
-Route::resource('/score', ScoreController::class);
+ Route::get('students/{student}/subjects/create', [SubjectController::class, 'create'])->name('subject.create');
+Route::post('students/{student}/subjects', [SubjectController::class, 'store'])->name('subject.store');
+Route::get('students/{student}/subjects', [SubjectController::class, 'show'])->name('subject.show');
+Route::post('/students/{student}/subjects', [SubjectController::class, 'store'])->name('subject.store');
+
+
+Route::resource('roles', RoleController::class);
+Route::resource('subjects', SubjectController::class);
+
+
+Route::resource('/subject', SubjectController::class);
 Route::resource('/role', RoleController::class);
 // Route::resource('/teacher',TeacherController::class);
 Route::resource('/student', StudentController::class);

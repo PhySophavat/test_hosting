@@ -12,19 +12,24 @@ class StudentController extends Controller
     /**
      * Display a listing of students.
      */
-    public function index()
-    {
-        $students = Student::with('user')->get();
-        return view('student.index', compact('students'));
-    }
+   public function index()
+{
+   $students = Student::with('user', 'subjects')->get();
+
+    return view('student.index', compact('students'));
+}
 
     /**
      * Show the form for creating a new student.
      */
-    public function create()
-    {
-        return view('student.create');
-    }
+   public function create(Student $student)
+{
+    // Load latest score
+    $student->load('latestSubject');
+
+    return view('student.create', compact('student'));
+}
+
 
     /**
      * Store a newly created student.
@@ -47,9 +52,7 @@ class StudentController extends Controller
         Student::create([
             'user_id' => $user->id,
             'grade' => $validated['grade'],
-            'name'=>$validated['name'],
-            'email'=>$validated['email'],
-            'password'=>$validated['password'],
+            
         ]);
 
         $studentRole = Role::where('name', 'student')->first();
