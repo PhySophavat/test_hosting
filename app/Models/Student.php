@@ -16,6 +16,10 @@ public function subjects()
 {
     return $this->hasMany(Subject::class);
 }
+ public function class()
+    {
+        return $this->belongsTo(ClassModel::class);
+    }
 
 // Latest score record (for pre-fill)
 public function latestSubject()

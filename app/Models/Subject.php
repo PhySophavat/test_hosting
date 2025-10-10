@@ -33,7 +33,10 @@ class Subject extends Model
     {
         return $this->belongsTo(Student::class);
     }
-
+ public function classes()
+    {
+        return $this->belongsToMany(ClassModel::class, 'class_subject');
+    }
 
 
 }

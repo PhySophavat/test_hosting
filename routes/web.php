@@ -8,12 +8,17 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\SubjectController;
 use App\Models\Role;
-Route::get('/profile',[DashboardController::class, 'profile'])->name('auth.profile');
+use App\Http\Controllers\ClassController;
+use GuzzleHttp\Middleware;
+
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login'); 
 Route::post('/login', [AuthController::class, 'login']);                       
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');      
 
-Route::get('/dashboard',[DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+
+Route::get('/profile',[DashboardController::class, 'profile'])->name('auth.profile');
+Route::get('/dashboard',[DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 ////teacher
 
 Route::get('/teacher', [TeacherController::class, 'index'])->name('teacher.index');
@@ -36,18 +41,29 @@ Route::delete('/students/{student}', [StudentController::class, 'destroy'])->nam
 //     ->name('subject.index')
 //     ->middleware('auth');  
     // use App\Http\Controllers\SubjectController;
+Route::get('students/{student}/subjects/create', [SubjectController::class, 'create'])->name('subject.create');
 
- Route::get('students/{student}/subjects/create', [SubjectController::class, 'create'])->name('subject.create');
-Route::post('students/{student}/subjects', [SubjectController::class, 'store'])->name('subject.store');
+Route::post('students/{student}/subjects', [SubjectController::class, 'store']) ->name('subject.store');
+
 Route::get('students/{student}/subjects', [SubjectController::class, 'show'])->name('subject.show');
-Route::post('/students/{student}/subjects', [SubjectController::class, 'store'])->name('subject.store');
-
+Route::post('students/{student}/subjects', [SubjectController::class, 'store'])->name('subject.store');
+/////class
+Route::get('/class',[ClassController::class,'index'])->name('class.index');
+Route::get('subjects/7A', [SubjectController::class, 'show'])->name('subject.show.7A');
+Route::get('students/{student}/subjects', [SubjectController::class, 'show'])->name('subject.show');
+Route::get('subjects/{class}', [SubjectController::class, 'show'])->name('subject.show');
 
 Route::resource('roles', RoleController::class);
-Route::resource('subjects', SubjectController::class);
+// Route::resource('subjects', SubjectController::class);
 
 
 Route::resource('/subject', SubjectController::class);
 Route::resource('/role', RoleController::class);
-// Route::resource('/teacher',TeacherController::class);
+Route::resource('/teacher',TeacherController::class);
 Route::resource('/student', StudentController::class);
+
+
+
+
+
+});

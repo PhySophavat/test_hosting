@@ -14,13 +14,13 @@ class SubjectController extends Controller
     public function index(Student $student)
     {
         $subjects = Subject::all();
-        $student->load('scores', 'user'); // load scores and user
+        $student->load( 'user'); 
         return view('subject.index', compact('student', 'subjects'));
     }
 
 public function create(Student $student)
 {
-    // Load the latest subject (score)
+
     $student->load('latestSubject');
     return view('subject.create', compact('student'));
 }
@@ -51,11 +51,12 @@ public function store(Request $request, Student $student)
 
   public function show(Student $student)
 {
-    // Load all subjects for this student
+    
     $subjects = Subject::where('student_id', $student->id)->get();
 
-    return view('subject.show', compact('student', 'subjects'));
+    return view('subject.show', compact('student', 'subjects','class'));
 }
+
 
 
 

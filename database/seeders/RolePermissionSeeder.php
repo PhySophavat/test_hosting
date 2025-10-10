@@ -70,44 +70,44 @@ class RolePermissionSeeder extends Seeder
         }
 
        
-        $adminUser = User::firstOrCreate(
-            ['email' => 'admin@example.com'],
-            ['name' => 'Admin User', 'password' => Hash::make('password')]
-        );
-        $adminRole = Role::where('name', 'admin')->first();
+        // $adminUser = User::firstOrCreate(
+        //     ['email' => 'admin@example.com'],
+        //     ['name' => 'Admin User', 'password' => Hash::make('password')]
+        // );
+        // $adminRole = Role::where('name', 'admin')->first();
      
-        if ($adminRole && !$adminUser->roles()->where('role_id', $adminRole->id)->exists()) {
-            $adminUser->roles()->attach($adminRole);
-        }
+        // if ($adminRole && !$adminUser->roles()->where('role_id', $adminRole->id)->exists()) {
+        //     $adminUser->roles()->attach($adminRole);
+        // }
 
       
-        $teacherUser = User::firstOrCreate(
-            ['email' => 'teacher@example.com'],
-            ['name' => 'Teacher User', 'password' => Hash::make('password')]
-        );
-        $teacherRole = Role::where('name', 'teacher')->first();
-        if ($teacherRole && !$teacherUser->roles()->where('role_id', $teacherRole->id)->exists()) {
-            $teacherUser->roles()->attach($teacherRole);
-        }
+        // $teacherUser = User::firstOrCreate(
+        //     ['email' => 'teacher@example.com'],
+        //     ['name' => 'Teacher User', 'password' => Hash::make('password')]
+        // );
+        // $teacherRole = Role::where('name', 'teacher')->first();
+        // if ($teacherRole && !$teacherUser->roles()->where('role_id', $teacherRole->id)->exists()) {
+        //     $teacherUser->roles()->attach($teacherRole);
+        // }
      
-        Teacher::firstOrCreate(
-            ['user_id' => $teacherUser->id],
-            ['subject' => 'Mathematics']
-        );
+        // Teacher::firstOrCreate(
+        //     ['user_id' => $teacherUser->id],
+        //     ['subject' => 'Mathematics']
+        // );
 
       
-        $studentUser = User::firstOrCreate(
-            ['email' => 'student@example.com'],
-            ['name' => 'Student User', 'password' => Hash::make('password')]
-        );
-        $studentRole = Role::where('name', 'student')->first();
-        if ($studentRole && !$studentUser->roles()->where('role_id', $studentRole->id)->exists()) {
-            $studentUser->roles()->attach($studentRole);
-        }
+        // $studentUser = User::firstOrCreate(
+        //     ['email' => 'student@example.com'],
+        //     ['name' => 'Student User', 'password' => Hash::make('password')]
+        // );
+        // $studentRole = Role::where('name', 'student')->first();
+        // if ($studentRole && !$studentUser->roles()->where('role_id', $studentRole->id)->exists()) {
+        //     $studentUser->roles()->attach($studentRole);
+        // }
         
-        Student::firstOrCreate(
-            ['user_id' => $studentUser->id],
-            ['grade' => '10']
-        );
+        // Student::firstOrCreate(
+        //     ['user_id' => $studentUser->id],
+        //     ['grade' => '10']
+        // );
     }
 }

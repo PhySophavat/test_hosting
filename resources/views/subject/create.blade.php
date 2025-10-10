@@ -19,7 +19,7 @@
         $subject = $student->latestSubject;
     @endphp
 
-    <form action="{{ route('subject.create', $student->id) }}" method="POST">
+    <form action="{{ route('subject.store', $student->id) }}" method="POST">
         @csrf
         <table class="min-w-full border text-left mb-4 rounded-lg overflow-hidden">
             <thead class="bg-gray-100">

@@ -28,21 +28,52 @@
           <a href="{{ route('dashboard') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
             <i class="fa-solid fa-house mr-2"></i> Dashboard
           </a>
-          <a href="{{ route('role.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
-            <i class="fa-solid fa-user-shield mr-2"></i> Role
-          </a>
-          <a href="{{ route('teacher.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
-            <i class="fa-solid fa-chalkboard-teacher mr-2"></i> Teacher
-          </a>
-          <a href="{{ route('student.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
-            <i class="fa-solid fa-graduation-cap mr-2"></i> Student
-          </a>
-          {{-- <a href="{{ route('score.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
-            <i class="fa-solid fa-clipboard-list mr-2"></i> Score
-          </a> --}}
-        </nav>
-      </div>
+          
+                    @if (Auth::user()->hasRole('admin'))
+                        <a href="{{ route('role.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
+                            <i class="fa-solid fa-user-shield mr-2"></i> Role
+                        </a>
+                    @endif
 
+                    
+                    @if (Auth::user()->hasPermission('manage-teacher'))
+                        <a href="{{ route('teacher.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
+                            <i class="fa-solid fa-chalkboard-teacher mr-2"></i> Teacher
+                        </a>
+                    @endif
+
+                   
+                    @if (Auth::user()->hasPermission('add-student') || Auth::user()->hasPermission('view-student'))
+                        <a href="{{ route('student.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
+                            <i class="fa-solid fa-graduation-cap mr-2"></i> Student
+                        </a>
+                    @endif
+               
+<a href="{{ route('class.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
+  <i class="fa-solid fa-school mr-2"></i> Class
+</a>
+        </nav>
+       <form  class="mt-[400px]" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 rounded hover:bg-red-100 font-semibold text-red-700 flex items-center w-full text-left">
+                            <i class="fa-solid fa-sign-out-alt mr-2"></i> Logout
+                        </button>
+                    </form>
+      </div>
+{{-- /// --}}
+{{-- @if (Auth::user()->hasRole('admin'))
+  <a href="{{ route('role.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
+    <i class="fa-solid fa-user-shield mr-2"></i> Role
+  </a>
+@endif
+@if (Auth::user()->hasPermission('manage-teacher'))
+  <a href="{{ route('teacher.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-700 flex items-center">
+    <i class="fa-solid fa-chalkboard-teacher mr-2"></i> Teacher
+  </a>
+@endif --}}
+
+
+{{-- //// --}}
       <!-- Main content -->
       <div class="col-10 p-6">
         <div class="">
