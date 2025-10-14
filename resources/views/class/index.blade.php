@@ -10,7 +10,7 @@
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold text-blue-600 mb-4">Grade 7</h2>
             <div class="grid grid-cols-4 gap-2">
-      <a href="" 
+      <a href=" {{ route('class.7A.index') }}" 
    class="border-2 border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white rounded px-4 py-2 text-center font-medium transition">
    7A
 </a>

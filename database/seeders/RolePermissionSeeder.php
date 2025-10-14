@@ -23,12 +23,12 @@ class RolePermissionSeeder extends Seeder
     {
         
         $permissions = [
-            ['name' => 'manage-teacher', 'display_name' => 'Manage Teachers'], // Permission to create/edit/delete teachers
-            ['name' => 'add-student', 'display_name' => 'Add Students'],       // Permission to create students
-            ['name' => 'view', 'display_name' => 'View Records'],              // Permission to view records
-            ['name' => 'edit', 'display_name' => 'Edit Records'],              // Permission to edit records
-            ['name' => 'delete', 'display_name' => 'Delete Records'],          // Permission to delete records
-            ['name' => 'view-student', 'display_name' => 'View Student Profile'], // Permission to view student profiles
+            ['name' => 'manage-teacher', 'display_name' => 'Manage Teachers'], 
+            ['name' => 'add-student', 'display_name' => 'Add Students'],       
+            ['name' => 'view', 'display_name' => 'View Records'],             
+            ['name' => 'edit', 'display_name' => 'Edit Records'],              
+            ['name' => 'delete', 'display_name' => 'Delete Records'],          
+            ['name' => 'view-student', 'display_name' => 'View Student Profile'], 
         ];
 
         foreach ($permissions as $perm) {

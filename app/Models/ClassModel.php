@@ -16,7 +16,6 @@ class ClassModel extends Model
         return $this->hasMany(Student::class);
     }
 
-    // Optional: A class has many subjects (many-to-many)
     public function subjects()
     {
         return $this->belongsToMany(Subject::class, 'class_subject');

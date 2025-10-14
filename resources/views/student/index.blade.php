@@ -14,6 +14,7 @@
             </a>
         </div>
     @endif
+    
         <!-- Student Table -->
           @if (Auth::user()->hasPermission('add-student'))
                         <div class="overflow-x-auto">

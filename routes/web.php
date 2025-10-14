@@ -7,9 +7,16 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\UserController;
 use App\Models\Role;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\ExportController;
 use GuzzleHttp\Middleware;
+use Illuminate\Support\Facades\Http;
+
+// Include your class routes
+require __DIR__.'/class.php';
+
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login'); 
 Route::post('/login', [AuthController::class, 'login']);                       
@@ -62,8 +69,29 @@ Route::resource('/role', RoleController::class);
 Route::resource('/teacher',TeacherController::class);
 Route::resource('/student', StudentController::class);
 
+////export user
+Route::get('/export-users', [UserController::class, 'exportAllUsers']);
 
 
+// use App\Http\Controllers\ExportController;
+
+Route::get('/export-all', [ExportController::class, 'exportAll']);
+
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+// use Illuminate\Support\Facades\Http;
+// use Illuminate\Support\Facades\Route;
+
+Route::get('/users', function () {
+    // 1. Call the public API
+    $response = Http::get('https://jsonplaceholder.typicode.com/users');
+
+    // 2. Convert JSON to PHP array
+    $users = $response->json();
+
+    // 3. Send data to the view
+    return view('users.index', compact('users'));
+});
 
 
 });

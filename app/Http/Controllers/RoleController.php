@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Models\Role;
+
 class RoleController extends Controller
 {
    public function index()
@@ -25,7 +26,6 @@ public function update(Request $request, Role $role)
     $role->permissions()->sync($request->input('permissions', []));
     return redirect()->route('role.index')->with('success', 'Permissions updated successfully!');
 }
-
 
 
 
