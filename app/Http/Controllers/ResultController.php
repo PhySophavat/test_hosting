@@ -1,13 +1,14 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ClassController extends Controller
+class ResultController extends Controller
 {
     public function index()
     {
-       
+        // Example class structure: dynamic & reusable
         $grades = [
             7 => ['A','B','C','D','E','F','G','H'],
             8 => ['A','B','C','D','E','F','G','H'],
@@ -17,17 +18,16 @@ class ClassController extends Controller
             12 => ['A','B','C','D','E','F','G','H'],
         ];
 
-        return view('class.index', compact('grades'));
+        return view('result.index', compact('grades'));
     }
 
    public function show($className)
 {
-  
+    // Example: "7A", "9B", etc.
     $students = \App\Models\Student::with('user')
         ->where('grade', $className)
         ->get();
 
-    return view('class.show', compact('students', 'className'));
+    return view('result.show', compact('students', 'className'));
 }
-
 }

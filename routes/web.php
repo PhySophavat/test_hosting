@@ -11,11 +11,33 @@ use App\Http\Controllers\UserController;
 use App\Models\Role;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ResultController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Http;
 
-// Include your class routes
+// Include your class routesuse App\Http\Controllers\ClassController;
+
+Route::get('/class/{name}', [ClassController::class, 'show'])->name('class.show');
+
 require __DIR__.'/class.php';
+
+/////rank
+use App\Http\Controllers\RankController;
+Route::get('/rank/{className}', [RankController::class, 'show'])->name('rank.index');
+
+
+Route::get('/rank/{className}', [RankController::class, 'index'])->name('rank.index');
+
+// use App\Http\Controllers\ResultController;
+
+Route::get('/result', [ResultController::class, 'index'])->name('result.index');
+Route::get('/result/{className}', [ResultController::class, 'show'])->name('result.show');
+
+
+
+Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
+Route::get('/classes/{class}', [ClassController::class, 'show'])->name('classes.show');
+
 
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login'); 
