@@ -1,18 +1,28 @@
 <?php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
 {
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'user_id',
-         'subject'
-        ];
+    use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'subject',
+        'phone',
+        'date_of_birth',
+        'gender',
+        'village',
+        'commune',
+        'district',
+        'province',
+        'class_assigned',
+    ];
+
+    // Each teacher belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class);

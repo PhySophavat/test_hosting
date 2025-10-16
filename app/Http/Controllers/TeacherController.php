@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Teacher;
+use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -35,21 +35,29 @@ class TeacherController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:3',
+            'password' => 'required|string|min:6',
             'subject' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date',
+            'gender' => 'nullable|string|max:10',
+            'village' => 'nullable|string|max:255',
+            'commune' => 'nullable|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'province' => 'nullable|string|max:255',
+            'class_assigned' => 'nullable|string|max:50',
         ]);
 
+        // Create user
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        Teacher::create([
-            'user_id' => $user->id,
-            'subject' => $validated['subject'],
-        ]);
+        // Create teacher
+        Teacher::create(array_merge($validated, ['user_id' => $user->id]));
 
+        // Assign role
         $teacherRole = Role::where('name', 'teacher')->first();
         if ($teacherRole && !$user->roles()->where('role_id', $teacherRole->id)->exists()) {
             $user->roles()->attach($teacherRole);
@@ -76,8 +84,17 @@ class TeacherController extends Controller
             'email' => 'required|email|unique:users,email,' . $teacher->user->id,
             'password' => 'nullable|string|min:6',
             'subject' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date',
+            'gender' => 'nullable|string|max:10',
+            'village' => 'nullable|string|max:255',
+            'commune' => 'nullable|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'province' => 'nullable|string|max:255',
+            'class_assigned' => 'nullable|string|max:50',
         ]);
 
+        // Update user
         $userData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -87,7 +104,8 @@ class TeacherController extends Controller
         }
         $teacher->user->update($userData);
 
-        $teacher->update(['subject' => $validated['subject']]);
+        // Update teacher
+        $teacher->update($validated);
 
         return redirect()->route('teacher.index')->with('success', 'Teacher updated successfully!');
     }
@@ -97,8 +115,9 @@ class TeacherController extends Controller
      */
     public function destroy(Teacher $teacher)
     {
-        $teacher->user->delete();
+        $teacher->user->delete(); // delete user also
         $teacher->delete();
+
         return redirect()->route('teacher.index')->with('success', 'Teacher deleted successfully!');
     }
 }

@@ -13,13 +13,27 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ResultController;
 use GuzzleHttp\Middleware;
+use App\Http\Controllers\UserPermissionController;
 use Illuminate\Support\Facades\Http;
+
+// use App\Http\Controllers\UserPermissionController;
+
+Route::prefix('users')->group(function () {
+    Route::get('{user}/permissions', [UserPermissionController::class, 'edit'])->name('user.permissions.edit');
+    Route::put('{user}/permissions', [UserPermissionController::class, 'update'])->name('user.permissions.update');
+});
 
 // Include your class routesuse App\Http\Controllers\ClassController;
 
 Route::get('/class/{name}', [ClassController::class, 'show'])->name('class.show');
 
 require __DIR__.'/class.php';
+///permission teacher
+Route::get('users/{user}/permissions', [UserPermissionController::class, 'edit'])
+     ->name('user.permissions.edit');
+
+Route::put('users/{user}/permissions', [UserPermissionController::class, 'update'])
+     ->name('user.permissions.update');
 
 /////rank
 use App\Http\Controllers\RankController;

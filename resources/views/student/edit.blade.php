@@ -131,6 +131,6 @@
         <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 font-semibold w-full">
             កែប្រែព័ត៌មានសិស្ស
         </button>
-    </form>
+    </form>            
 </div>
 @endsection

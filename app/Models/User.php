@@ -18,10 +18,11 @@ class User extends Authenticatable
         return $this->hasOne(Teacher::class);
     }
 
-    public function student()
-    {
-        return $this->hasOne(Student::class);
-    }
+   public function student()
+{
+    return $this->hasOne(Student::class);
+}
+
    // ✅ Check if user has a specific role
     // public function hasRole($role)
     // {

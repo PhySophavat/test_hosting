@@ -12,7 +12,27 @@ class CreateStudentsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             
-            $table->string('grade');
+            $table->date('date_of_birth')->nullable();
+
+            $table->string('gender');
+            // $table->string('grade');
+
+            // ទីកន្លែងស្នាក់នៅ
+            $table->string('village')->nullable();
+            $table->string('commune')->nullable();
+            $table->string('district')->nullable();
+            $table->string('province')->nullable();
+
+            // ទំនាក់ទំនង
+            $table->string('phone')->nullable();
+            $table->string('high_school')->nullable();
+
+            // ព័ត៌មានឪពុកម្តាយ
+            $table->string('mother_name')->nullable();
+            $table->string('mother_phone')->nullable();
+            $table->string('father_name')->nullable();
+            $table->string('father_phone')->nullable();
+            $table->string('grade')->nullable();
             $table->timestamps();
         });
     }
