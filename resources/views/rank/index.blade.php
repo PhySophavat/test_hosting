@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-6">
+<div class="container mx-auto bg-white rounded-lg shadow-md p-6">
     <!-- Header -->
     <div class="flex flex-col md:flex-row items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800 mb-2 md:mb-0">សម្រាប់ថ្នាក់ {{ $className }}</h1>
@@ -31,7 +31,7 @@
     <!-- Two-column responsive grid with equal height cards -->
     <div class=" gap-6">
         <!-- Card 1: Student List / Rank Table -->
-         <div class="bg-white rounded-lg shadow-md p-6">
+         <div class="">
             <h2 class="text-xl font-semibold mb-4 border-b pb-2">តារាងសិស្ស</h2>
             <div class="overflow-x-auto">
                 <table class="min-w-full border border-gray-200">

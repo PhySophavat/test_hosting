@@ -15,6 +15,70 @@ use App\Http\Controllers\ResultController;
 use GuzzleHttp\Middleware;
 use App\Http\Controllers\UserPermissionController;
 use Illuminate\Support\Facades\Http;
+// use App\Http\Controllers\UserPermissionController;
+// use App\Http\Controllers\StudentController;
+// use App\Http\Controllers\UserPermissionControlle
+// use App\Http\Controllers\SubjectController;
+
+Route::middleware(['auth'])->group(function () {
+    // Subject/Score Management
+    Route::get('/students/{student}/scores', [SubjectController::class, 'create'])
+        ->name('subject.create');
+    Route::post('/students/{student}/scores', [SubjectController::class, 'store'])
+        ->name('subject.store');
+    Route::get('/scores', [SubjectController::class, 'index'])
+        ->name('subject.index');
+    Route::get('/students/{student}/scores/view', [SubjectController::class, 'show'])
+        ->name('subject.show');
+    Route::delete('/scores/{subject}', [SubjectController::class, 'destroy'])
+        ->name('subject.destroy');
+});
+Route::middleware(['auth'])->group(function () {
+    // User Permission Management
+    Route::get('/users/{user}/permissions', [UserPermissionController::class, 'edit'])
+        ->name('user.permissions.edit');
+    Route::put('/users/{user}/permissions', [UserPermissionController::class, 'update'])
+        ->name('user.permissions.update');
+    
+    // Teacher Management
+    Route::resource('teacher', TeacherController::class);
+    
+    // Student Management
+    Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+    Route::get('/students/create', [StudentController::class, 'create'])->name('student.create');
+    Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+    Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('student.edit');
+    Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
+    Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+});
+// User Permission Management Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/users/{user}/permissions', [UserPermissionController::class, 'edit'])
+        ->name('user.permissions.edit');
+    Route::put('/users/{user}/permissions', [UserPermissionController::class, 'update'])
+        ->name('user.permissions.update');
+});
+// Student Management Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+    Route::get('/students/create', [StudentController::class, 'create'])->name('student.create');
+    Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+    Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('student.edit');
+    Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
+    Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+});
+
+// User Permission Management Routes
+Route::get('/users/{user}/permissions', [UserPermissionController::class, 'edit'])
+    ->name('user.permissions.edit');
+Route::put('/users/{user}/permissions', [UserPermissionController::class, 'update'])
+    ->name('user.permissions.update');
+
+/// User Permission Management Routes
+Route::get('/users/{user}/permissions', [TeacherController::class, 'editPermissions'])
+    ->name('user.permissions.edit');
+Route::put('/users/{user}/permissions', [TeacherController::class, 'updatePermissions'])
+    ->name('user.permissions.update');
 
 // use App\Http\Controllers\UserPermissionController;
 

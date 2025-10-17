@@ -27,4 +27,29 @@ class Teacher extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get array of assigned classes
+     * 
+     * @return array
+     */
+    public function getAssignedClassesArray()
+    {
+        if (empty($this->class_assigned)) {
+            return [];
+        }
+        
+        return array_map('trim', explode(',', $this->class_assigned));
+    }
+
+    /**
+     * Check if teacher is assigned to a specific class
+     * 
+     * @param string $className
+     * @return bool
+     */
+    public function isAssignedToClass($className)
+    {
+        return in_array($className, $this->getAssignedClassesArray());
+    }
 }

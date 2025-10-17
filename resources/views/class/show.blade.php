@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
+    <div class="bg-white ">
         
         {{-- Header --}}
         <div class="flex justify-between items-center mb-6">
@@ -10,60 +10,66 @@
                 <i class="bi bi-people-fill text-blue-600"></i>
                 បញ្ជីសិស្សថ្នាក់ {{ $className }}
             </h2>
-
+            @if(Auth::user()->hasRole('admin'))
             <a href="{{ route('students.create') }}" 
-               class="flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition font-medium shadow-sm">
+               class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition font-semibold">
                 <i class="bi bi-plus-circle"></i>
                 បន្ថែមសិស្ស
             </a>
+            @endif
         </div>
 
         {{-- Table --}}
-        <div class="overflow-x-auto">
-            <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-                <thead class="bg-gradient-to-r from-blue-50 to-blue-100">
+        <div class="overflow-x-auto border border-gray-200 " >
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
                     <tr>
-                        <th class="py-3 px-4 text-left font-semibold text-gray-700 border-b">ល.រ</th>
-                        <th class="py-3 px-4 text-left font-semibold text-gray-700 border-b">ឈ្មោះ</th>
-                        <th class="py-3 px-4 text-left font-semibold text-gray-700 border-b">អ៊ីមែល</th>
-                        <th class="py-3 px-4 text-left font-semibold text-gray-700 border-b">ថ្នាក់</th>
-                        <th class="py-3 px-4 text-center font-semibold text-gray-700 border-b">សកម្មភាព</th>
+                        <th class="py-3 px-4 text-left font-semibold text-gray-700">ល.រ</th>
+                        <th class="py-3 px-4 text-left font-semibold text-gray-700">ឈ្មោះ</th>
+                        <th class="py-3 px-4 text-left font-semibold text-gray-700">អ៊ីមែល</th>
+                        <th class="py-3 px-4 text-left font-semibold text-gray-700">ថ្នាក់</th>
+                        <th class="py-3 px-4 text-center font-semibold text-gray-700">សកម្មភាព</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($students as $student)
-                        <tr class="hover:bg-blue-50 even:bg-gray-50 transition">
-                            <td class="py-3 px-4 border-b text-gray-700">{{ $student->id }}</td>
-                            <td class="py-3 px-4 border-b text-gray-800 font-medium">{{ $student->user->name ?? 'N/A' }}</td>
-                            <td class="py-3 px-4 border-b text-gray-700">{{ $student->user->email ?? 'N/A' }}</td>
-                            <td class="py-3 px-4 border-b text-gray-700">{{ $student->grade }}</td>
-                            <td class="py-3 px-4 border-b text-center space-x-2">
-                                <a href="{{ route('subject.create', $student->id) }}" 
-                                   class="inline-block text-blue-600 hover:text-blue-800 font-medium">
-                                   <i class="bi bi-plus-circle"></i> បញ្ជូលពិន្ទុ
-                                </a>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($students as $index => $student)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="py-3 px-4 text-gray-700">{{ $index + 1 }}</td>
+                            <td class="py-3 px-4 font-medium text-gray-800">{{ $student->user->name ?? 'N/A' }}</td>
+                            <td class="py-3 px-4 text-gray-700">{{ $student->user->email ?? 'N/A' }}</td>
+                            <td class="py-3 px-4 text-gray-700">{{ $student->grade }}</td>
+                            <td class="py-3 px-4 text-center">
+                                <div class="flex flex-wrap justify-center gap-2">
+                                    @if(Auth::user()->hasRole('teacher'))
+                                        <a href="{{ route('subject.create', $student->id) }}" 
+                                           class="text-blue-600 font-medium hover:underline mr2">
+                                            បញ្ជូលពិន្ទុ
+                                        </a>
+                                    @endif
 
-                                @if (Auth::user()->hasRole('admin'))
-                                    <a href="{{ route('students.edit', $student) }}" 
-                                       class="inline-block text-green-600 hover:text-green-800 font-medium">
-                                       <i class="bi bi-pencil-square"></i> កែប្រែ
-                                    </a>
+                                    @if(Auth::user()->hasRole('admin'))
+                                        <a href="{{ route('students.edit', $student) }}" 
+                                           class="text-green-600 font-medium hover:underline mr2">
+                                           កែប្រែ
+                                        </a>
 
-                                    <form action="{{ route('students.destroy', $student) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" 
-                                                class="text-red-600 hover:text-red-800 font-medium" 
-                                                onclick="return confirm('Delete this student?')">
-                                            <i class="bi bi-trash3"></i> លុប
-                                        </button>
-                                    </form>
-                                @endif
+                                        <form action="{{ route('students.destroy', $student) }}" method="POST" class="inline"
+                                              onsubmit="return confirm('តើអ្នកចង់លុបសិស្ស {{ $student->user->name }} មែនទេ?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                    class="text-red-600 font-medium hover:underline mr2">
+                                                លុប
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="py-5 px-4 text-center text-gray-500">
+                            <td colspan="5" class="py-6 text-center text-gray-500">
+                                <i class="bi bi-inbox text-3xl mb-2 block"></i>
                                 បញ្ជីឈ្មោះសិស្សថ្នាក់ {{ $className }} មិនមានទេ។
                             </td>
                         </tr>
@@ -71,6 +77,13 @@
                 </tbody>
             </table>
         </div>
+
+        {{-- Student Count --}}
+        @if($students->count() > 0)
+            <div class="mt-4 text-gray-600 text-sm">
+                សរុប: <strong>{{ $students->count() }}</strong> នាក់
+            </div>
+        @endif
     </div>
 </div>
 @endsection

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Teacher;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -119,5 +120,35 @@ class TeacherController extends Controller
         $teacher->delete();
 
         return redirect()->route('teacher.index')->with('success', 'Teacher deleted successfully!');
+    }
+
+    /**
+     * Show the form for editing user permissions.
+     */
+    public function editPermissions($userId)
+    {
+        $user = User::with('permissions')->findOrFail($userId);
+        
+        // Get all available permissions
+        $permissions = Permission::all();
+        
+        // Get user's current permission IDs (ensure it's an array)
+        $userPermissions = $user->permissions->pluck('id')->toArray();
+        
+        return view('users.permissions.edit', compact('user', 'permissions', 'userPermissions'));
+    }
+
+    /**
+     * Update user permissions.
+     */
+    public function updatePermissions(Request $request, $userId)
+    {
+        $user = User::findOrFail($userId);
+        
+        // Sync permissions (this will add new and remove unchecked ones)
+        $user->permissions()->sync($request->input('permissions', []));
+        
+        return redirect()->route('teacher.index')
+            ->with('success', 'ការផ្តល់សិទ្ធិបានជោគជ័យ!');
     }
 }

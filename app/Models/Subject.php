@@ -15,6 +15,12 @@ class Subject extends Model
         'english',
         'history',
         'geography',
+        'chemistry',
+        'physics',
+        'biology',
+        'ethics',
+        'sports',
+
         
     ];
       public function user()
@@ -37,6 +43,7 @@ class Subject extends Model
     {
         return $this->belongsToMany(ClassModel::class, 'class_subject');
     }
+    
 
 
 }

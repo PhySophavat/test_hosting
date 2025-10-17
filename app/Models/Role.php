@@ -6,15 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    protected $fillable = ['name','display_name','description'];
+    protected $fillable = ['name', 'display_name', 'description'];
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class);
+        return $this->belongsToMany(Permission::class, 'permission_role')
+                    ->withTimestamps();
     }
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'role_user')
+                    ->withTimestamps();
     }
 }

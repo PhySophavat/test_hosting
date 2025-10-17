@@ -1,9 +1,10 @@
 @extends('layouts.app')
 @section('content')
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
 <div class="flex items-center justify-between p-4 ">
   <h1 class="text-xl font-bold text-gray-800">បញ្ជីសិស្ស</h1>
   <a href="{{ route('rank.index', $className) }}" 
-     class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+     class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition font-semibold">
     ចំណាត់ថ្នាក់
   </a>
 </div>
@@ -77,4 +78,5 @@
         @endforelse
     </tbody>
 </table>
+</div>
 @endsection

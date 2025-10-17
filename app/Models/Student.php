@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
         'grade',
@@ -26,27 +23,35 @@ class Student extends Model
         'father_phone',
     ];
 
-    // All scores for this student
+    /**
+     * Relationship with user
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relationship with all subjects (scores)
+     */
     public function subjects()
     {
         return $this->hasMany(Subject::class);
     }
 
-    // Latest score record (for pre-fill)
+    /**
+     * Get the latest subject (most recent score entry)
+     */
     public function latestSubject()
     {
         return $this->hasOne(Subject::class)->latestOfMany();
     }
 
-    // Belongs to a user account
-    public function user()
+    /**
+     * Alternative: Get the current active subject (if you only want one record per student)
+     */
+    public function subject()
     {
-        return $this->belongsTo(User::class); // user_id in students table
-    }
-
-    // Optional: belongs to class
-    public function class()
-    {
-        return $this->belongsTo(ClassModel::class);
+        return $this->hasOne(Subject::class);
     }
 }
