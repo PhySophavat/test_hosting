@@ -8,6 +8,8 @@ use App\Models\Role;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ActivityLogController;
 
 class TeacherController extends Controller
 {
@@ -56,13 +58,21 @@ class TeacherController extends Controller
         ]);
 
         // Create teacher
-        Teacher::create(array_merge($validated, ['user_id' => $user->id]));
+        $teacher = Teacher::create(array_merge($validated, ['user_id' => $user->id]));
 
         // Assign role
         $teacherRole = Role::where('name', 'teacher')->first();
         if ($teacherRole && !$user->roles()->where('role_id', $teacherRole->id)->exists()) {
             $user->roles()->attach($teacherRole);
         }
+
+        // Log activity
+        app(ActivityLogController::class)->log(
+            'Teacher Created',
+            'Created teacher: ' . $validated['name'] . ' (ID: ' . $teacher->id . ')',
+            'Teacher',
+            $teacher->id
+        );
 
         return redirect()->route('teacher.index')->with('success', 'Teacher added successfully!');
     }
@@ -108,6 +118,14 @@ class TeacherController extends Controller
         // Update teacher
         $teacher->update($validated);
 
+        // Log activity
+        app(ActivityLogController::class)->log(
+            'Teacher Updated',
+            'Updated teacher: ' . $validated['name'] . ' (ID: ' . $teacher->id . ')',
+            'Teacher',
+            $teacher->id
+        );
+
         return redirect()->route('teacher.index')->with('success', 'Teacher updated successfully!');
     }
 
@@ -116,8 +134,20 @@ class TeacherController extends Controller
      */
     public function destroy(Teacher $teacher)
     {
-        $teacher->user->delete(); // delete user also
+        $teacherId = $teacher->id;
+        $teacherName = $teacher->user->name;
+        $userId = $teacher->user->id;
+
+        // Delete user and teacher
+        $teacher->user->delete();
         $teacher->delete();
+        
+        // Log activity
+        app(ActivityLogController::class)->log(
+            'Teacher Deleted',
+            'Deleted teacher: ' . $teacherName . ' (ID: ' . $teacherId . ')',
+           
+        );
 
         return redirect()->route('teacher.index')->with('success', 'Teacher deleted successfully!');
     }
@@ -128,13 +158,8 @@ class TeacherController extends Controller
     public function editPermissions($userId)
     {
         $user = User::with('permissions')->findOrFail($userId);
-        
-        // Get all available permissions
         $permissions = Permission::all();
-        
-        // Get user's current permission IDs (ensure it's an array)
         $userPermissions = $user->permissions->pluck('id')->toArray();
-        
         return view('users.permissions.edit', compact('user', 'permissions', 'userPermissions'));
     }
 
@@ -144,11 +169,17 @@ class TeacherController extends Controller
     public function updatePermissions(Request $request, $userId)
     {
         $user = User::findOrFail($userId);
-        
-        // Sync permissions (this will add new and remove unchecked ones)
         $user->permissions()->sync($request->input('permissions', []));
-        
+
+        // Log activity
+        app(ActivityLogController::class)->log(
+            'Teacher Permissions Updated',
+            'Updated permissions for teacher: ' . $user->name . ' (User ID: ' . $userId . ')',
+            'Teacher',
+            $user->teacher->id ?? null
+        );
+
         return redirect()->route('teacher.index')
-            ->with('success', 'ការផ្តល់សិទ្ធិបានជោគជ័យ!');
+            ->with('success', 'Permissions updated successfully!');
     }
 }

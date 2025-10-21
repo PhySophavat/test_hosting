@@ -84,6 +84,7 @@ class SubjectController extends Controller
 
         // Check if subject record exists for this student
         $subject = Subject::where('student_id', $studentId)->first();
+        $userId=$user->id;
 
         if ($subject) {
             // REPLACE existing scores completely (not add to them)
@@ -96,6 +97,24 @@ class SubjectController extends Controller
             ]));
             $message = 'ពិន្ទុត្រូវបានរក្សាទុកដោយជោគជ័យ!';
         }
+//       app(ActivityLogController::class)->log(
+//     'Add Score',
+//     'Added new scores for student ID: ' . $studentId . 
+//     ' by user ID: ' . $userId . 
+//     '. Scores: ' . json_encode($validated),
+//     'Score',
+//     $studentId
+// );
+ app(ActivityLogController::class)->log(
+        'Add Score',
+        'Added new scores for student ID: ' . $studentId . 
+        // ' by user ID: ' . $userId . 
+        '. Scores: ' . collect($validated)->map(fn($v, $k) => "$k=$v")->implode(', '),
+
+        'Score',
+        $studentId
+    );
+
 
         return redirect()->route('subject.create', $studentId)
             ->with('success', $message);

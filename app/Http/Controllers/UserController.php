@@ -13,6 +13,6 @@ class UserController extends Controller
     }
 
 
-
+//  logActivity('create_user', "Admin created user ID: $user->id");
 
 }

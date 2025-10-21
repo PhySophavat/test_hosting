@@ -89,7 +89,8 @@
             </tbody>
         </table>
     </div>
-
+  {{-- {{ dd(auth()->user()) }} --}}
+  {{-- {{ dd($students) }} --}}
     @if($students->count() > 0)
         <div class="mt-4 text-gray-600 text-sm">
             សរុប: <strong>{{ $students->count() }}</strong> នាក់

@@ -65,7 +65,7 @@ class StudentController extends Controller
         }
 
         // Create Student linked to user
-        Student::create([
+         $student=Student::create([
             'user_id' => $user->id,
             'grade' => $validated['grade'] ?? null,
             'date_of_birth' => $validated['date_of_birth'] ?? null,
@@ -81,6 +81,12 @@ class StudentController extends Controller
             'father_name' => $validated['father_name'] ?? null,
             'father_phone' => $validated['father_phone'] ?? null,
         ]);
+         app(ActivityLogController::class)->log(
+            'Student Created',
+            'Created Student: ' . $validated['name'] . ' (ID: ' . $student->id . ')',
+            'Teacher',
+            $student->id
+        );
 
         return redirect()->route('students.index')->with('success', 'Student added successfully!');
     }
@@ -117,6 +123,7 @@ class StudentController extends Controller
             'father_phone' => 'nullable|string',
         ]);
 
+
         // Update User
         $userData = [
             'name' => $validated['name'],
@@ -143,6 +150,12 @@ class StudentController extends Controller
             'father_name' => $validated['father_name'] ?? $student->father_name,
             'father_phone' => $validated['father_phone'] ?? $student->father_phone,
         ]);
+        app(ActivityLogController::class)->log(
+            'Student Update',
+            'Update Student: ' . $validated['name'] . ' (ID: ' . $student->id . ')',
+            'Teacher',
+            $student->id
+        );
 
         return redirect()->route('students.index')->with('success', 'Student updated successfully!');
     }
@@ -152,8 +165,17 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
+        $studentId=$student->id;
+        $studentName=$student->user->name;
+
         $student->user->delete();
         $student->delete();
+         app(ActivityLogController::class)->log(
+            'Student Delete',
+            'Delete Student: ' . $studentName . ' (ID: ' . $student->id . ')',
+            'Student',
+            // $studentId
+        );
         return redirect()->route('students.index')->with('success', 'Student deleted successfully!');
     }
 }

@@ -11,9 +11,6 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
@@ -46,43 +43,47 @@
         <a href="{{ route('auth.profile') }}" class="inline-block">
           <i class="fa-solid fa-user text-5xl text-blue-500 mb-2"></i>
           <h2 class="text-lg font-bold text-gray-800">{{ Auth::user()->name }}</h2>
-          
         </a>
       </div>
-       @if (Auth::user()->hasRole('admin'))
-      <nav class="flex flex-col space-y-2 flex-1">
-        <a href="{{ route('dashboard') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
-          <i class="fa-solid fa-house mr-3"></i> ទំព័រដើម
-        </a>
-        @endif
 
+      <nav class="flex flex-col space-y-2 flex-1">
         @if (Auth::user()->hasRole('admin'))
+        <a href="{{ route('dashboard') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
+          <i class="fa-solid fa-house mr-3 text-blue-500"></i> ទំព័រដើម
+        </a>
+
         <a href="{{ route('role.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
-          <i class="fa-solid fa-user-shield mr-3"></i> តួនាទី
+          <i class="fa-solid fa-user-shield mr-3 text-green-500"></i> ការអនុញ្ញាត
+        </a>
+
+        <a href="{{ route('students.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
+          <i class="fa-solid fa-user-graduate mr-3 text-purple-500"></i> សិស្ស
         </a>
         @endif
 
         @if (Auth::user()->hasPermission('manage-teacher') || Auth::user()->hasRole('admin'))
         <a href="{{ route('teacher.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
-          <i class="fa-solid fa-chalkboard-teacher mr-3"></i> គ្រូ
-        </a>
-        @endif
-
-        @if ( Auth::user()->hasRole('admin'))
-        <a href="{{ route('students.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
-          <i class="fa-solid fa-graduation-cap mr-3"></i> សិស្ស
+          <i class="fa-solid fa-chalkboard-teacher mr-3 text-yellow-500"></i> គ្រូ
         </a>
         @endif
 
         @if (Auth::user()->hasPermission('view-classes') || Auth::user()->hasRole('admin') || Auth::user()->hasRole('teacher'))
         <a href="{{ route('class.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
-          <i class="fa-solid fa-school mr-3"></i> ថ្នាក់
+          <i class="fa-solid fa-school mr-3 text-orange-500"></i> ថ្នាក់
         </a>
         @endif
 
-        @if ( Auth::user()->hasRole('admin') || Auth::user()->hasRole('teacher')|| Auth::User()->hasRole('student'))
+        @if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('teacher') || Auth::user()->hasRole('student'))
         <a href="{{ route('result.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
-          <i class="fa-solid fa-file mr-3"></i> លទ្ធផល
+          <i class="fa-solid fa-file-lines mr-3 text-indigo-500"></i> លទ្ធផល
+        </a>
+
+        <a href="{{ route('activity_logs.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
+          <i class="fa-solid fa-list-check mr-3 text-pink-500"></i> កំណត់ត្រា
+        </a>
+
+        <a href="" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
+          <i class="fa-solid fa-user-shield mr-3 text-purple-500"></i> សុំច្បាប់
         </a>
         @endif
       </nav>
@@ -90,7 +91,7 @@
       <form class="mt-auto" action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="px-4 py-2 mt-4 rounded hover:bg-red-100 font-semibold text-red-700 flex items-center w-full text-left transition">
-          <i class="fa-solid fa-sign-out-alt mr-3"></i> ចាកចេញ
+          <i class="fa-solid fa-right-from-bracket mr-3"></i> ចាកចេញ
         </button>
       </form>
     </aside>

@@ -15,10 +15,16 @@ use App\Http\Controllers\ResultController;
 use GuzzleHttp\Middleware;
 use App\Http\Controllers\UserPermissionController;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\ActivityLogController;
 // use App\Http\Controllers\UserPermissionController;
 // use App\Http\Controllers\StudentController;
 // use App\Http\Controllers\UserPermissionControlle
 // use App\Http\Controllers\SubjectController;
+
+Route::get('/activity-logs', [ActivityLogController::class, 'index'])
+    ->name('activity_logs.index')
+    ->middleware('auth');
+
 
 Route::middleware(['auth'])->group(function () {
     // Subject/Score Management
