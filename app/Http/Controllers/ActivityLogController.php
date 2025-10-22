@@ -18,16 +18,24 @@ class ActivityLogController extends Controller
 
     /**
      * Log an activity.
+     *
+     * @param string $action
+     * @param string $description
+     * @param array|null $oldValues
+     * @param array|null $newValues
      */
-    public static function log($action, $description,)
-    {
-        ActivityLog::create([
-            'user_id' => Auth::id(),
-            'action' => $action,
-            'description' => $description,
-            // 'model_type' => $modelType,
-            // 'model_id' => $modelId,
-            'ip_address' => request()->ip(),
-        ]);
-    }
+public static function log($action, $description, $oldValues = null, $newValues = null)
+{
+    ActivityLog::create([
+        'user_id' => Auth::id(),
+        'action' => $action,
+        'description' => $description,
+        'old_values' => $oldValues ? json_encode($oldValues, JSON_UNESCAPED_UNICODE) : null,
+        'new_values' => $newValues ? json_encode($newValues, JSON_UNESCAPED_UNICODE) : null,
+        'ip_address' => request()->ip(),
+        'user_agent' => request()->header('User-Agent'),
+    ]);
+}
+
+
 }

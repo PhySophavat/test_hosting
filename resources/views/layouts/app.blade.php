@@ -82,7 +82,7 @@
           <i class="fa-solid fa-list-check mr-3 text-pink-500"></i> កំណត់ត្រា
         </a>
 
-        <a href="" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
+        <a href="{{ route('permission.index') }}" class="px-4 py-2 rounded hover:bg-blue-100 font-semibold text-gray-800 text-lg flex items-center transition">
           <i class="fa-solid fa-user-shield mr-3 text-purple-500"></i> សុំច្បាប់
         </a>
         @endif
