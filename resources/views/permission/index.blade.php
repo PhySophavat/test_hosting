@@ -3,7 +3,8 @@
 @section('title', 'សំណើច្បាប់ - Permission Requests')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<h1>well come </h1>
+{{-- <div class="container mx-auto px-4 py-8">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <div>
@@ -236,5 +237,5 @@ function rejectRequest(id) {
 function closeModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');
 }
-</script>
+</script> --}}
 @endsection

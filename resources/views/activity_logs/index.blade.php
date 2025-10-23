@@ -49,10 +49,11 @@
                                     'create' => 'bg-green-100 text-green-800 border-green-300',
                                     'update' => 'bg-blue-100 text-blue-800 border-blue-300',
                                     'delete' => 'bg-red-100 text-red-800 border-red-300',
+                                    'add' => 'bg-green-100 text-green-800 border-green-300',
                                     'default' => 'bg-gray-100 text-gray-800 border-gray-300'
                                 ];
                                 $actionType = 'default';
-                                foreach(['create', 'update', 'delete'] as $type) {
+                                foreach(['create', 'update', 'delete', 'add'] as $type) {
                                     if(str_contains(strtolower($log->action), $type)) {
                                         $actionType = $type;
                                         break;
@@ -68,7 +69,7 @@
                         <!-- Description -->
                         <td class="px-4 py-4">
                             <div class="text-sm text-gray-900 max-w-xs truncate" title="{{ $log->description }}">
-                                {{ $log->description }}
+                                {{ Str::limit($log->description, 50) }}
                             </div>
                             <div class="text-xs text-gray-500 mt-1">
                                 <i class="fa-solid fa-network-wired"></i> {{ $log->ip_address ?? 'N/A' }}
@@ -78,10 +79,24 @@
                         <!-- Changes Summary -->
                         <td class="px-4 py-4">
                             @php
-                                $oldValues = is_array($log->old_values) ? $log->old_values : json_decode($log->old_values, true) ?? [];
-                                $newValues = is_array($log->new_values) ? $log->new_values : json_decode($log->new_values, true) ?? [];
-                                $hasOld = !empty($oldValues);
-                                $hasNew = !empty($newValues);
+                                // Properly decode JSON strings
+                                $oldValues = null;
+                                $newValues = null;
+                                
+                                if (is_string($log->old_values)) {
+                                    $oldValues = json_decode($log->old_values, true);
+                                } elseif (is_array($log->old_values)) {
+                                    $oldValues = $log->old_values;
+                                }
+                                
+                                if (is_string($log->new_values)) {
+                                    $newValues = json_decode($log->new_values, true);
+                                } elseif (is_array($log->new_values)) {
+                                    $newValues = $log->new_values;
+                                }
+                                
+                                $hasOld = !empty($oldValues) && is_array($oldValues);
+                                $hasNew = !empty($newValues) && is_array($newValues);
                             @endphp
                             
                             <div class="flex items-center gap-2 text-xs">
@@ -124,6 +139,24 @@
                     <!-- Hidden Details Row -->
                     <tr id="details-{{ $log->id }}" class="hidden bg-gray-50">
                         <td colspan="6" class="px-4 py-4">
+                            @php
+                                // Re-decode for details section
+                                $oldValues = null;
+                                $newValues = null;
+                                
+                                if (is_string($log->old_values)) {
+                                    $oldValues = json_decode($log->old_values, true);
+                                } elseif (is_array($log->old_values)) {
+                                    $oldValues = $log->old_values;
+                                }
+                                
+                                if (is_string($log->new_values)) {
+                                    $newValues = json_decode($log->new_values, true);
+                                } elseif (is_array($log->new_values)) {
+                                    $newValues = $log->new_values;
+                                }
+                            @endphp
+                            
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Old Values -->
                                 <div>
@@ -131,10 +164,10 @@
                                         <i class="fa-solid fa-history text-red-600"></i>
                                         Old Values
                                     </h4>
-                                    @if(!empty($oldValues))
+                                    @if(!empty($oldValues) && is_array($oldValues))
                                         <div class="bg-white border border-red-200 rounded-lg p-3 max-h-64 overflow-y-auto">
                                             @foreach($oldValues as $key => $value)
-                                                @if(!in_array($key, ['id', 'created_at', 'updated_at']))
+                                                @if(!in_array($key, ['id', 'created_at', 'updated_at', 'password']))
                                                     <div class="mb-2 pb-2 border-b border-gray-100 last:border-0">
                                                         <span class="text-xs font-semibold text-gray-600">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span>
                                                         <div class="text-sm text-gray-800 mt-1">
@@ -161,10 +194,10 @@
                                         <i class="fa-solid fa-sparkles text-green-600"></i>
                                         New Values
                                     </h4>
-                                    @if(!empty($newValues))
+                                    @if(!empty($newValues) && is_array($newValues))
                                         <div class="bg-white border border-green-200 rounded-lg p-3 max-h-64 overflow-y-auto">
                                             @foreach($newValues as $key => $value)
-                                                @if(!in_array($key, ['id', 'created_at', 'updated_at']))
+                                                @if(!in_array($key, ['id', 'created_at', 'updated_at', 'password']))
                                                     <div class="mb-2 pb-2 border-b border-gray-100 last:border-0">
                                                         <span class="text-xs font-semibold text-gray-600">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span>
                                                         <div class="text-sm text-gray-800 mt-1">

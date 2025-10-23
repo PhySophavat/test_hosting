@@ -102,6 +102,7 @@ public function update(Request $request, Teacher $teacher)
 
    
     $oldValues = $teacher->load('user')->toArray();
+    // dd($oldValues);
 
     // Update user
     $userData = [
@@ -128,6 +129,7 @@ public function update(Request $request, Teacher $teacher)
   
     $teacher->refresh(); 
     $newValues = $teacher->load('user')->toArray();
+    
 
     // Log activity
     ActivityLogController::log(

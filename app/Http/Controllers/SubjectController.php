@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use App\Models\Subject;
+use App\Http\Controllers\ActivityLogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -84,37 +85,48 @@ class SubjectController extends Controller
 
         // Check if subject record exists for this student
         $subject = Subject::where('student_id', $studentId)->first();
-        $userId=$user->id;
-
+        
         if ($subject) {
+            // Capture old values before update
+            $oldValues = $subject->toArray();
+            
             // REPLACE existing scores completely (not add to them)
             $subject->update($dataToSave);
+            
+            // Refresh to get new values
+            $subject->refresh();
+            $newValues = $subject->toArray();
+            
+            // Log activity for update
+            ActivityLogController::log(
+                'update_scores',
+                'Updated scores for student: ' . $student->user->name . 
+                ' (Average: ' . round($average, 2) . ', Rank: ' . $rank . ')',
+                $oldValues,
+                $newValues
+            );
+            
             $message = 'ពិន្ទុត្រូវបានកែប្រែដោយជោគជ័យ! (ពិន្ទុចាស់ត្រូវបានជំនួស)';
         } else {
             // Create new record
-            Subject::create(array_merge($dataToSave, [
+            $subject = Subject::create(array_merge($dataToSave, [
                 'student_id' => $studentId,
             ]));
+            
+            // Refresh to get complete data
+            $subject->refresh();
+            
+            // Log activity for create
+            ActivityLogController::log(
+                'add_scores',
+                'Added new scores for student: ' . $student->user->name . 
+                ' (Average: ' . round($average, 2) . ', Rank: ' . $rank . ')',
+                null,
+                $subject->toArray()
+            );
+            
             $message = 'ពិន្ទុត្រូវបានរក្សាទុកដោយជោគជ័យ!';
         }
-//       app(ActivityLogController::class)->log(
-//     'Add Score',
-//     'Added new scores for student ID: ' . $studentId . 
-//     ' by user ID: ' . $userId . 
-//     '. Scores: ' . json_encode($validated),
-//     'Score',
-//     $studentId
-// );
- app(ActivityLogController::class)->log(
-        'Add Score',
-        'Added new scores for student ID: ' . $studentId . 
-        // ' by user ID: ' . $userId . 
-        '. Scores: ' . collect($validated)->map(fn($v, $k) => "$k=$v")->implode(', '),
-
-        'Score',
-        $studentId
-    );
-
 
         return redirect()->route('subject.create', $studentId)
             ->with('success', $message);
@@ -187,8 +199,21 @@ class SubjectController extends Controller
             abort(403, 'មានតែអ្នកគ្រប់គ្រងទេដែលអាចលុបពិន្ទុបាន។');
         }
 
-        $subject = Subject::findOrFail($subjectId);
+        $subject = Subject::with('student.user')->findOrFail($subjectId);
+        
+        // Capture data before deletion
+        $oldValues = $subject->toArray();
+        $studentName = $subject->student->user->name ?? 'Unknown';
+        
         $subject->delete();
+
+        // Log activity
+        ActivityLogController::log(
+            'delete_scores',
+            'Deleted scores for student: ' . $studentName,
+            $oldValues,
+            null
+        );
 
         return redirect()->back()->with('success', 'ពិន្ទុត្រូវបានលុបដោយជោគជ័យ!');
     }

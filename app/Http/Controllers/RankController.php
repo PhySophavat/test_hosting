@@ -4,65 +4,126 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\Subject;
 
 class RankController extends Controller
 {
     /**
-     * Show dynamic rank for a given class (e.g. "7A" or "Flower").
+     * Show dynamic rank for a given class with optional month filter.
      */
-    public function index($className)
+    public function index(Request $request, $className)
     {
-        // Load students of that class with user and subjects
-        $students = Student::with(['user', 'subjects'])
-            ->where('grade', $className) // adjust column if your class field is named differently
+        $month = $request->input('month');
+        $year = $request->input('year', date('Y'));
+
+        $students = Student::with('user')
+            ->where('grade', $className)
             ->get();
 
-        $scores = $students->map(function($s) {
-            // If your subjects table stores a single numeric column 'score' per subject row:
-            $sum = $s->subjects->sum('score'); // common pivot: subjects() -> withPivot('score')
-            return ['student' => $s, 'total' => (float)$sum];
-        });
+        if ($students->isEmpty()) {
+            return view('rank.index', [
+                'className' => $className,
+                'rankedStudents' => collect(),
+                'stats' => [
+                    'total_students' => 0,
+                    'highest_score' => 0,
+                    'lowest_score' => 0,
+                    'average_score' => 0,
+                    'top_student' => null,
+                    'has_scores' => false,
+                ],
+                'selectedMonth' => $month,
+                'selectedYear' => $year,
+            ]);
+        }
 
-      
-        $allZero = $scores->every(fn($d) => $d['total'] == 0);
+        $subjectsQuery = Subject::whereIn('student_id', $students->pluck('id'));
 
-        if ($allZero) {
-            // Strategy B: sum known subject columns on the related subjects collection
-            $scores = $students->map(function($s) {
-                // adapt these field names to your schema
-                $math = $s->subjects->sum('math');
-                $khmer = $s->subjects->sum('khmer');
-                $english = $s->subjects->sum('english');
-                $history = $s->subjects->sum('history');
-                $geography = $s->subjects->sum('geography');
-
-                $total = $math + $khmer + $english + $history + $geography;
-                return ['student' => $s, 'total' => (float)$total];
+        if ($month) {
+            $subjectsQuery->whereMonth('created_at', $month)
+                          ->whereYear('created_at', $year);
+        } else {
+            $subjectsQuery->whereIn('id', function($query) use ($students) {
+                $query->selectRaw('MAX(id)')
+                      ->from('subjects')
+                      ->whereIn('student_id', $students->pluck('id'))
+                      ->groupBy('student_id');
             });
         }
 
-        // Sort by total desc
+        $subjects = $subjectsQuery->get()->keyBy('student_id');
+
+        $scores = $students->map(function($student) use ($subjects) {
+            $subject = $subjects->get($student->id);
+
+            if ($subject) {
+                $subjectScores = [
+                    $subject->math ?? 0,
+                    $subject->khmer ?? 0,
+                    $subject->english ?? 0,
+                    $subject->history ?? 0,
+                    $subject->geography ?? 0,
+                    $subject->chemistry ?? 0,
+                    $subject->physics ?? 0,
+                    $subject->biology ?? 0,
+                    $subject->ethics ?? 0,
+                    $subject->sports ?? 0,
+                ];
+
+                $total = array_sum($subjectScores);
+                $average = $subject->average ?? 0;
+
+                return [
+                    'student' => $student,
+                    'total' => (float)$total,
+                    'average' => (float)$average,
+                    'subject' => $subject,
+                    'has_score' => $total > 0,
+                ];
+            }
+
+            return [
+                'student' => $student,
+                'total' => 0,
+                'average' => 0,
+                'subject' => null,
+                'has_score' => false,
+            ];
+        });
+
         $sorted = $scores->sortByDesc('total')->values();
 
-        // Assign dense ranks: equal totals => same rank; next rank increments by 1
         $ranked = collect();
         $currentRank = 0;
         $lastTotal = null;
+
         foreach ($sorted as $index => $row) {
             if ($lastTotal === null || $row['total'] !== $lastTotal) {
-                $currentRank++;
+                $currentRank = $index + 1;
                 $lastTotal = $row['total'];
             }
             $row['rank'] = $currentRank;
-            // compute average if you want (need subject count)
-            // We'll set average = null here; you can compute if you know subject count
-            $row['average'] = null;
             $ranked->push($row);
         }
+
+        $withScores = $ranked->filter(fn($r) => $r['has_score']);
+
+        $stats = [
+            'total_students' => $ranked->count(),
+            'students_with_scores' => $withScores->count(),
+            'highest_score' => $withScores->max('total') ?? 0,
+            'lowest_score' => $withScores->min('total') ?? 0,
+            'average_score' => $withScores->avg('total') ?? 0,
+            'top_student' => $withScores->first(),
+            'has_scores' => $withScores->isNotEmpty(),
+        ];
 
         return view('rank.index', [
             'className' => $className,
             'rankedStudents' => $ranked,
+            'stats' => $stats,
+            'selectedMonth' => $month,
+            'selectedYear' => $year,
         ]);
     }
 }
