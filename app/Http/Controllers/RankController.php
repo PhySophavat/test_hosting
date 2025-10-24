@@ -20,12 +20,26 @@ class RankController extends Controller
             ->where('grade', $className)
             ->get();
 
+        // Count gender
+        $maleCount = $students->filter(function($student) {
+            $gender = strtolower($student->gender ?? '');
+            return in_array($gender, ['male', 'ប្រុស', 'm', '1', 'boy', 'ប្រុស']);
+        })->count();
+
+        $femaleCount = $students->filter(function($student) {
+            $gender = strtolower($student->gender ?? '');
+            return in_array($gender, ['female', 'ស្រី', 'f', '2', 'girl', 'ស្រី']);
+        })->count();
+
         if ($students->isEmpty()) {
             return view('rank.index', [
                 'className' => $className,
                 'rankedStudents' => collect(),
                 'stats' => [
                     'total_students' => 0,
+                    'male_count' => 0,
+                    'female_count' => 0,
+                    'students_with_scores' => 0,
                     'highest_score' => 0,
                     'lowest_score' => 0,
                     'average_score' => 0,
@@ -110,6 +124,8 @@ class RankController extends Controller
 
         $stats = [
             'total_students' => $ranked->count(),
+            'male_count' => $maleCount,
+            'female_count' => $femaleCount,
             'students_with_scores' => $withScores->count(),
             'highest_score' => $withScores->max('total') ?? 0,
             'lowest_score' => $withScores->min('total') ?? 0,

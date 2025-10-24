@@ -11,33 +11,54 @@ use Illuminate\Support\Facades\Auth;
 class SubjectController extends Controller
 {
     /**
-     * Show the form for creating/editing scores for a student.
+     * Display all subjects/scores.
+     */
+    public function index()
+    {
+        // Check permission
+        $user = Auth::user();
+        if (!$user || (! $user->hasPermission('view-scores') &&
+            ! $user->hasRole('teacher') &&
+            ! $user->hasRole('admin'))) {
+            abort(403, 'អ្នកមិនមានសិទ្ធិមើលពិន្ទុទេ។');
+        }
+
+        // Load all subjects with student and user relationships
+        $subjects = Subject::with(['student.user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('subject.index', compact('subjects'));
+    }
+
+    /**
+     * Show the form for creating a new score for a student.
      */
     public function create($studentId)
     {
         // Check permission
         $user = Auth::user();
-        if (!$user || (! $user->hasPermission('add-scores') && 
-            ! $user->hasRole('teacher') && 
+        if (!$user || (! $user->hasPermission('add-scores') &&
+            ! $user->hasRole('teacher') &&
             ! $user->hasRole('admin'))) {
             abort(403, 'អ្នកមិនមានសិទ្ធិក្នុងការបញ្ចូលពិន្ទុទេ។');
         }
 
         $student = Student::with('user', 'latestSubject')->findOrFail($studentId);
-        
+
         return view('subject.create', compact('student'));
     }
 
     /**
-     * Store or update scores for a student.
-     * Note: This REPLACES existing scores, does not add to them.
+     * Store a new score record for a student.
+     * Always creates a new record (never updates).
      */
     public function store(Request $request, $studentId)
     {
         // Check permission
         $user = Auth::user();
-        if (!$user || (! $user->hasPermission('add-scores') && 
-            ! $user->hasRole('teacher') && 
+        if (!$user || (! $user->hasPermission('add-scores') &&
+            ! $user->hasRole('teacher') &&
             ! $user->hasRole('admin'))) {
             return redirect()->back()->with('error', 'អ្នកមិនមានសិទ្ធិក្នុងការបញ្ចូលពិន្ទុទេ។');
         }
@@ -54,20 +75,21 @@ class SubjectController extends Controller
             'chemistry' => 'nullable|numeric|min:0|max:100',
             'physics' => 'nullable|numeric|min:0|max:100',
             'biology' => 'nullable|numeric|min:0|max:100',
-            'ethics' => 'nullable|numeric|min:0|max:100',
-            'sports' => 'nullable|numeric|min:0|max:100',
+            'morality' => 'nullable|numeric|min:0|max:100',
+            'sport' => 'nullable|numeric|min:0|max:100',
         ]);
 
-        // Calculate total and average (only from entered scores)
-        $scores = array_filter($validated, fn($value) => !is_null($value) && $value !== '');
+        // Calculate total and average
+        $scores = array_filter($validated, fn($value) => $value !== null && $value !== '');
         $total = array_sum($scores);
         $average = count($scores) > 0 ? $total / count($scores) : 0;
 
-        // Determine rank based on average
+        // Determine rank
         $rank = $this->calculateRank($average);
 
-        // Prepare data to save (replace all fields, including nulls)
+        // Prepare data for saving
         $dataToSave = [
+            'student_id' => $studentId,
             'math' => $validated['math'] ?? null,
             'khmer' => $validated['khmer'] ?? null,
             'english' => $validated['english'] ?? null,
@@ -76,60 +98,27 @@ class SubjectController extends Controller
             'chemistry' => $validated['chemistry'] ?? null,
             'physics' => $validated['physics'] ?? null,
             'biology' => $validated['biology'] ?? null,
-            'ethics' => $validated['ethics'] ?? null,
-            'sports' => $validated['sports'] ?? null,
+            'ethics' => $validated['morality'] ?? null,  // Map morality → ethics
+            'sports' => $validated['sport'] ?? null,     // Map sport → sports
             'total' => $total,
             'average' => round($average, 2),
             'rank' => $rank,
         ];
 
-        // Check if subject record exists for this student
-        $subject = Subject::where('student_id', $studentId)->first();
-        
-        if ($subject) {
-            // Capture old values before update
-            $oldValues = $subject->toArray();
-            
-            // REPLACE existing scores completely (not add to them)
-            $subject->update($dataToSave);
-            
-            // Refresh to get new values
-            $subject->refresh();
-            $newValues = $subject->toArray();
-            
-            // Log activity for update
-            ActivityLogController::log(
-                'update_scores',
-                'Updated scores for student: ' . $student->user->name . 
-                ' (Average: ' . round($average, 2) . ', Rank: ' . $rank . ')',
-                $oldValues,
-                $newValues
-            );
-            
-            $message = 'ពិន្ទុត្រូវបានកែប្រែដោយជោគជ័យ! (ពិន្ទុចាស់ត្រូវបានជំនួស)';
-        } else {
-            // Create new record
-            $subject = Subject::create(array_merge($dataToSave, [
-                'student_id' => $studentId,
-            ]));
-            
-            // Refresh to get complete data
-            $subject->refresh();
-            
-            // Log activity for create
-            ActivityLogController::log(
-                'add_scores',
-                'Added new scores for student: ' . $student->user->name . 
-                ' (Average: ' . round($average, 2) . ', Rank: ' . $rank . ')',
-                null,
-                $subject->toArray()
-            );
-            
-            $message = 'ពិន្ទុត្រូវបានរក្សាទុកដោយជោគជ័យ!';
-        }
+        // ✅ Always create a new record
+        $subject = Subject::create($dataToSave);
+
+        // ✅ Log activity
+        ActivityLogController::log(
+            'add_scores',
+            'Added new scores for student: ' . $student->user->name .
+            ' (Average: ' . round($average, 2) . ', Rank: ' . $rank . ')',
+            null,
+            $subject->toArray()
+        );
 
         return redirect()->route('subject.create', $studentId)
-            ->with('success', $message);
+            ->with('success', 'ពិន្ទុថ្មីត្រូវបានរក្សាទុកដោយជោគជ័យ!');
     }
 
     /**
@@ -137,37 +126,14 @@ class SubjectController extends Controller
      */
     private function calculateRank($average)
     {
-        if ($average >= 90) {
-            return 'A';
-        } elseif ($average >= 80) {
-            return 'B';
-        } elseif ($average >= 70) {
-            return 'C';
-        } elseif ($average >= 60) {
-            return 'D';
-        } elseif ($average >= 50) {
-            return 'E';
-        } else {
-            return 'F';
-        }
-    }
-
-    /**
-     * Display all subjects/scores.
-     */
-    public function index()
-    {
-        // Check permission
-        $user = Auth::user();
-        if (!$user || (! $user->hasPermission('view-scores') && 
-            ! $user->hasRole('teacher') && 
-            ! $user->hasRole('admin'))) {
-            abort(403, 'អ្នកមិនមានសិទ្ធិមើលពិន្ទុទេ។');
-        }
-
-        $subjects = Subject::with('student.user')->get();
-        
-        return view('subject.index', compact('subjects'));
+        return match (true) {
+            $average >= 90 => 'A',
+            $average >= 80 => 'B',
+            $average >= 70 => 'C',
+            $average >= 60 => 'D',
+            $average >= 50 => 'E',
+            default => 'F',
+        };
     }
 
     /**
@@ -177,14 +143,14 @@ class SubjectController extends Controller
     {
         // Check permission
         $user = Auth::user();
-        if (!$user || (! $user->hasPermission('view-scores') && 
-            ! $user->hasRole('teacher') && 
+        if (!$user || (! $user->hasPermission('view-scores') &&
+            ! $user->hasRole('teacher') &&
             ! $user->hasRole('admin'))) {
             abort(403, 'អ្នកមិនមានសិទ្ធិមើលពិន្ទុទេ។');
         }
 
         $student = Student::with('user', 'subjects')->findOrFail($studentId);
-        
+
         return view('subject.show', compact('student'));
     }
 
@@ -200,11 +166,11 @@ class SubjectController extends Controller
         }
 
         $subject = Subject::with('student.user')->findOrFail($subjectId);
-        
+
         // Capture data before deletion
         $oldValues = $subject->toArray();
         $studentName = $subject->student->user->name ?? 'Unknown';
-        
+
         $subject->delete();
 
         // Log activity

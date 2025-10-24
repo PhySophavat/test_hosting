@@ -33,7 +33,6 @@
 
     <tbody>
       @php
-        // Calculate totals for all students and sort by total descending
         $studentsWithTotals = $students->map(function($student) {
             $math = $student->subjects->sum('math');
             $khmer = $student->subjects->sum('khmer');
@@ -42,11 +41,11 @@
             $biology = $student->subjects->sum('biology');
             $history = $student->subjects->sum('history');
             $geography = $student->subjects->sum('geography');
-            $morality = $student->subjects->sum('morality');
-            $sport = $student->subjects->sum('sport');
+            $ethics = $student->subjects->sum('ethics');       // fixed
+            $sports = $student->subjects->sum('sports');       // fixed
             $english = $student->subjects->sum('english');
 
-            $total = $math + $khmer + $physics + $chemistry + $biology + $history + $geography + $morality + $sport + $english;
+            $total = $math + $khmer + $physics + $chemistry + $biology + $history + $geography + $ethics + $sports + $english;
 
             return [
                 'student' => $student,
@@ -57,8 +56,8 @@
                 'biology' => $biology,
                 'history' => $history,
                 'geography' => $geography,
-                'morality' => $morality,
-                'sport' => $sport,
+                'ethics' => $ethics,
+                'sports' => $sports,
                 'english' => $english,
                 'total' => $total,
             ];
@@ -86,8 +85,8 @@
           <td class="border-b py-2 px-4">{{ $data['biology'] }}</td>
           <td class="border-b py-2 px-4">{{ $data['history'] }}</td>
           <td class="border-b py-2 px-4">{{ $data['geography'] }}</td>
-          <td class="border-b py-2 px-4">{{ $data['morality'] }}</td>
-          <td class="border-b py-2 px-4">{{ $data['sport'] }}</td>
+          <td class="border-b py-2 px-4">{{ $data['ethics'] }}</td>
+          <td class="border-b py-2 px-4">{{ $data['sports'] }}</td>
           <td class="border-b py-2 px-4">{{ $data['english'] }}</td>
           <td class="border-b py-2 px-4 font-bold">{{ $total }}</td>
           <td class="border-b py-2 px-4 font-bold">{{ $average }}</td>

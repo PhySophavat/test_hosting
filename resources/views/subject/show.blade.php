@@ -1,4 +1,4 @@
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('content')
 {{-- <div class="p-10">
@@ -30,7 +30,7 @@
 
     <a href="{{ route('subject.create', $student->id) }}" class="text-blue-600 hover:underline">Add/Edit Scores</a>
 </div> --}}
-<table class="min-w-full mt-4 border border-gray-300 bg-white rounded-lg">
+{{-- <table class="min-w-full mt-4 border border-gray-300 bg-white rounded-lg">
     <thead class="bg-gray-100">
         <tr>
             <th class="py-2 px-4 border">Student ID</th>
@@ -68,6 +68,6 @@
             </tr>
         @endforelse
     </tbody>
-</table>
+</table> --}}
 
-@endsection
+@endsection --}}

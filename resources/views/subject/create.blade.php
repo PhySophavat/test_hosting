@@ -77,7 +77,7 @@
                                 {{-- Math --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-math'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="math" value="{{ old('math', $subject->math ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="math" min="0" max="100" step="0.01"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
@@ -88,7 +88,7 @@
                                 {{-- Khmer --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-khmer'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="khmer" value="{{ old('khmer', $subject->khmer ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="khmer"  min="0" max="100" step="0.01"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
@@ -99,7 +99,7 @@
                                 {{-- English --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-english'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="english" value="{{ old('english', $subject->english ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="english" min="0" max="100" step="0.01"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
@@ -110,7 +110,7 @@
                                 {{-- History --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-history'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="history" value="{{ old('history', $subject->history ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="history" min="0" max="100" step="0.01"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
@@ -121,7 +121,7 @@
                                 {{-- Geography --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-geography'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="geography" value="{{ old('geography', $subject->geography ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="geography"  min="0" max="100" step="0.01"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
@@ -132,7 +132,7 @@
                                 {{-- Chemistry --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-chemistry'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="chemistry" value="{{ old('chemistry', $subject->chemistry ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="chemistry" min="0" max="100" step="0.01"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
@@ -143,7 +143,7 @@
                                 {{-- Physics --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-physics'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="physics" value="{{ old('physics', $subject->physics ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="physics" min="0" max="100" step="0.01"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
@@ -154,7 +154,7 @@
                                 {{-- Biology --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-biology'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="biology" value="{{ old('biology', $subject->biology ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="biology" min="0" max="100" step="0.01"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
@@ -165,7 +165,7 @@
                                 {{-- Morality --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-morality'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="morality" value="{{ old('morality', $subject->morality ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="morality" min="0" max="100" step=".5"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
@@ -176,7 +176,7 @@
                                 {{-- Sport --}}
                                 @if(Auth::user()->hasRole('admin') || Auth::user()->hasPermission('subject-sport'))
                                     <td class="px-4 py-3 border-b">
-                                        <input type="number" name="sport" value="{{ old('sport', $subject->sport ?? '') }}" min="0" max="100" step="0.01"
+                                        <input type="number" name="sport" min="0" max="100" step="0.01"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="0-100">
                                     </td>
