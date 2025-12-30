@@ -16,13 +16,24 @@ use GuzzleHttp\Middleware;
 use App\Http\Controllers\UserPermissionController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\ActivityLogController;
-use App\Http\Controllers\PermissionController;
+// use App\Http\Controllers\PermissionController;
 // use App\Http\Controllers\UserPermissionController;
 // use App\Http\Controllers\StudentController;
 // use App\Http\Controllers\UserPermissionControlle
 // use App\Http\Controllers\SubjectController;
-Route::get('/permission',[PermissionController::class, 'index'])->name('permission.index');
+// user App\Http\Controllers\PermissionController;
+// Route::get('/permission',[PermissionController::class, 'index'])->name('permission.index');
+use App\Http\Controllers\PermissionController;
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/permissions', [PermissionController::class, 'index'])->name('permission.index');
+    Route::get('/permissions/create', [PermissionController::class, 'create'])->name('permission.create');
+    Route::post('/permissions', [PermissionController::class, 'store'])->name('permission.store');
+    Route::get('/permissions/{permission}', [PermissionController::class, 'show'])->name('permission.show');
+    Route::post('/permissions/{permission}/approve', [PermissionController::class, 'approve'])->name('permission.approve');
+    Route::post('/permissions/{permission}/reject', [PermissionController::class, 'reject'])->name('permission.reject');
+    Route::delete('/permissions/{permission}/cancel', [PermissionController::class, 'cancel'])->name('permission.cancel');
+});
 Route::get('/activity-logs', [ActivityLogController::class, 'index'])
     ->name('activity_logs.index')
     ->middleware('auth');

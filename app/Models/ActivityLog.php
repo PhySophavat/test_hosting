@@ -17,10 +17,11 @@ class ActivityLog extends Model
 ];
 
 protected $casts = [
-    'old_values' => 'array',
-    'new_values' => 'array'
-];
-
+        'old_values' => 'array',
+        'new_values' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);
